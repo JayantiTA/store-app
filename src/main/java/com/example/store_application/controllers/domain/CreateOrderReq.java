@@ -1,5 +1,7 @@
 package com.example.store_application.controllers.domain;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -9,17 +11,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CreateProductReq {
+public class CreateOrderReq {
     @NotBlank
-    private String name;
+    private String address;
 
     @NotNull
-    private Double price;
-
-    @NotNull
-    private Integer stock;
-
-    @NotNull
-    @JsonProperty("category_id")
-    private Long categoryId;
+    @JsonProperty("item_ids")
+    private List<Long> itemIds;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ import com.example.store_application.services.CartService;
 import com.example.store_application.services.UserService;
 
 @RestController
-@RequestMapping("/carts")
+@RequestMapping("/api/v1/carts")
 public class CartController {
 
     @Autowired
@@ -25,12 +26,14 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @PreAuthorize("hasRole('user')")
     @GetMapping("/items")
     public ResponseEntity<List<CartItemDTO>> getCartItems() {
         Long cartId = getCartId();
         return ResponseEntity.ok(cartService.getCartItems(cartId));
     }
 
+    @PreAuthorize("hasRole('user')")
     @PostMapping("/add-to-cart")
     public ResponseEntity<List<CartItemDTO>> addAndUpdateCartItem(@RequestBody AddCartItemReq cartItem) {
         Long cartId = getCartId();
@@ -38,6 +41,7 @@ public class CartController {
         return ResponseEntity.ok(cartService.addAndUpdateCartItem(cartItemDTO, cartId));
     }
 
+    @PreAuthorize("hasRole('user')")
     @PostMapping("/remove-from-cart")
     public ResponseEntity<List<CartItemDTO>> removeCartItem(@RequestBody RemoveCartItemReq cartItem) {
         Long cartId = getCartId();

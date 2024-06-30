@@ -38,6 +38,11 @@ public class CartService {
         return cartItems.stream().map(this::convertToDTO).toList();
     }
 
+    public CartItemDTO getCartItemById(Long id) {
+        CartItem cartItem = cartItemRepository.findById(id).orElse(null);
+        return cartItem != null ? convertToDTO(cartItem) : null;
+    }
+
     public List<CartItemDTO> addAndUpdateCartItem(CartItemDTO cartItem, Long cartId) {
         CartItem cartItemResp = cartItemRepository
                 .findByProductIdAndCartId(cartItem.getProductId(), cartId).orElse(null);
@@ -48,6 +53,9 @@ public class CartService {
                 cartItemResp.setQuantity(cartItem.getQuantity());
                 cartItemRepository.save(cartItemResp);
             }
+        } else {
+            cartItem.setCartId(cartId);
+            cartItemRepository.save(convertToEntity(cartItem));
         }
         return getCartItems(cartId);
     }
@@ -77,6 +85,14 @@ public class CartService {
             cartItemRepository.delete(cartItem);
         }
         return getCartItems(cartId);
+    }
+
+    public List<CartItemDTO> removeCartItemById(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElse(null);
+        if (cartItem != null) {
+            cartItemRepository.delete(cartItem);
+        }
+        return getCartItems(cartItem.getCartId());
     }
 
     private CartItemDTO convertToDTO(CartItem cartItem) {

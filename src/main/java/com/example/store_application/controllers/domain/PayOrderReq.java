@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class RemoveCartItemReq {
+public class PayOrderReq {
     @NotNull
-    @JsonProperty("product_id")
-    private Long productId;
+    @JsonProperty("payment_method")
+    private String paymentMethod;
 }

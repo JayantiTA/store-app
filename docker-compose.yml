@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    env_file: ./.env
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+        SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url"  : "jdbc:postgresql://db:5432/$DB_DATABASE",
+          "spring.datasource.username" : "$DB_USER",
+          "spring.datasource.password" : "$DB_PASSWORD",
+          "spring.jpa.hibernate.ddl-auto" : "update"
+        }'
+
+    ports:
+      - "8080:8080"
+
+  db:
+    env_file: ./.env
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_DATABASE
+    ports:
+      - "5432:5432"

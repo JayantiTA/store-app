@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
+    @GetMapping("/{categoryName}")
+    public ResponseEntity<List<ProductDTO>> getProductByCategory(@PathVariable String categoryName) {
+        return ResponseEntity.ok(productService.getProductsByCategoryName(categoryName));
+    }
+
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/create")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid CreateProductReq product) {
         ProductDTO productDTO = ProductDTO.builder().name(product.getName()).price(product.getPrice())

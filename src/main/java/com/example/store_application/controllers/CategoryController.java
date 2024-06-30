@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/create")
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody @Valid CreateCategoryReq category) {
         CategoryDTO categoryDTO = CategoryDTO.builder().name(category.getName()).build();

@@ -5,9 +5,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CartItemDTO {
+public class OrderItemDTO {
     private Long id;
-    private Long cartId;
+    private Long orderId;
     private Long productId;
     private Integer quantity;
+    private Double price;
 }

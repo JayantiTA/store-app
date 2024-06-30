@@ -25,6 +25,9 @@ public class UserService {
     public UserDTO createUser(UserDTO userDTO) {
         String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(hashedPassword);
+        if (userDTO.getRole() == null) {
+            userDTO.setRole("user");
+        }
         User user = userRepository.save(convertToEntity(userDTO));
         return convertToDTO(user);
     }

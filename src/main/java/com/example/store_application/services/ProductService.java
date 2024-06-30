@@ -5,16 +5,20 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.store_application.dto.ProductDTO;
+import com.example.store_application.entities.Category;
 import com.example.store_application.entities.Product;
+import com.example.store_application.repositories.CategoryRepository;
 import com.example.store_application.repositories.ProductRepository;
 
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public ProductDTO createProduct(ProductDTO product) {
@@ -27,9 +31,29 @@ public class ProductService {
         return convertToDTO(product);
     }
 
+    public List<ProductDTO> getProductsByCategoryName(String categoryName) {
+        Category category = categoryRepository.findByName(categoryName).orElse(null);
+        if (category == null) {
+            return null;
+        }
+        List<Product> products = productRepository.findByCategoryId(category.getId());
+        return products.stream().map(this::convertToDTO).toList();
+    }
+
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream().map(this::convertToDTO).toList();
+    }
+
+    public ProductDTO updateProductQuantity(Long id, Integer quantity) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            return null;
+        }
+
+        product.setStock(quantity);
+        Product productResp = productRepository.save(product);
+        return convertToDTO(productResp);
     }
 
     private ProductDTO convertToDTO(Product product) {
